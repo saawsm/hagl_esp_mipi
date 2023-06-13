@@ -67,16 +67,21 @@ static const char *TAG = "hagl_esp_mipi";
 static size_t
 flush(void *self)
 {
-#ifdef CONFIG_HAGL_HAL_LOCK_WHEN_FLUSHING
     size_t size = 0;
+#ifdef CONFIG_HAGL_HAL_LOCK_WHEN_FLUSHING
     /* Flush the whole back buffer with locking. */
     xSemaphoreTake(mutex, portMAX_DELAY);
+    mipi_display_open(spi);
     size = mipi_display_write(spi, 0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
+    mipi_display_close(spi);
     xSemaphoreGive(mutex);
     return size;
 #else
     /* Flush the whole back buffer. */
-    return mipi_display_write(spi, 0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
+    mipi_display_open(spi);
+    size = mipi_display_write(spi, 0, 0, bb.width, bb.height, (uint8_t *) bb.buffer);
+    mipi_display_close(spi);
+    return size;
 #endif /* CONFIG_HAGL_HAL_LOCK_WHEN_FLUSHING */
 }
 

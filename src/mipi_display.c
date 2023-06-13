@@ -280,7 +280,9 @@ void mipi_display_init(spi_device_handle_t *spi)
 
     ESP_LOGI(TAG, "Display initialized.");
 
+#ifdef CONFIG_MIPI_DISPLAY_EXCLUSIVE_BUS
     spi_device_acquire_bus(*spi, portMAX_DELAY);
+#endif
 }
 
 void mipi_display_ioctl(spi_device_handle_t spi, const uint8_t command, uint8_t *data, size_t size)
@@ -317,7 +319,16 @@ void mipi_display_ioctl(spi_device_handle_t spi, const uint8_t command, uint8_t 
     xSemaphoreGive(mutex);
 }
 
+void mipi_display_open(spi_device_handle_t spi)
+{
+#ifndef CONFIG_MIPI_DISPLAY_EXCLUSIVE_BUS
+    spi_device_acquire_bus(spi, portMAX_DELAY);
+#endif
+}
+
 void mipi_display_close(spi_device_handle_t spi)
 {
+#ifndef CONFIG_MIPI_DISPLAY_EXCLUSIVE_BUS
     spi_device_release_bus(spi);
+#endif
 }

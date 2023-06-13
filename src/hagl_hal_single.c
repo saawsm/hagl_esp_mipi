@@ -98,6 +98,18 @@ vline(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color)
     mipi_display_write(spi, x0, y0, width, height, (uint8_t *) line);
 }
 
+static void
+begin(void *self)
+{
+    mipi_display_open(spi);
+}
+
+static void
+end(void *self)
+{
+    mipi_display_close(spi);
+}
+
 void
 hagl_hal_init(hagl_backend_t *backend)
 {
@@ -111,5 +123,7 @@ hagl_hal_init(hagl_backend_t *backend)
     backend->hline = hline;
     backend->vline = vline;
     backend->blit = blit;
+    backend->begin = begin;
+    backend->end = end;
 }
 #endif /* CONFIG_HAGL_HAL_NO_BUFFERING */
