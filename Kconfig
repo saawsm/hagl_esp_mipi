@@ -186,6 +186,12 @@ config MIPI_DISPLAY_SPI_HOST
     default 0x02 if ESP32S3_SPI3_SELECTED
 endif
 
+config MIPI_DISPLAY_EXCLUSIVE_BUS
+    bool "Exclusive SPI Bus"
+    default y
+    help
+        Display uses SPI Host exclusively. No other devices share the same SPI bus.
+
 config MIPI_DISPLAY_PIN_MISO
     int "MISO pin number"
     default -1

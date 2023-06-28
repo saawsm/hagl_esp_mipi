@@ -73,7 +73,10 @@ flush(void *self)
     } else {
         bb.buffer = buffer1;
     }
-    return mipi_display_write(spi, 0, 0, bb.width, bb.height, (uint8_t *) buffer);
+    mipi_display_open(spi);
+    size_t size = mipi_display_write(spi, 0, 0, bb.width, bb.height, (uint8_t *) buffer);
+    mipi_display_close(spi);
+    return size;
 }
 
 static void
